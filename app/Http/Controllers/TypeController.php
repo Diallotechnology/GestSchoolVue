@@ -10,7 +10,16 @@ use Illuminate\Http\Request;
 
 final class TypeController extends Controller
 {
-    use DeleteAction;
+    public function index(Request $request)
+    {
+        $rows = Type::query()
+            ->search($request->search, ['nom'])
+            ->latest()
+            ->paginate(20)
+            ->withQueryString()->toResourceCollection();
+
+        return inertia('Type/Index', compact('rows'));
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -29,7 +38,7 @@ final class TypeController extends Controller
      */
     public function edit(Type $type)
     {
-        return view('type.update', compact('type'));
+        return inertia('Type/Edit', compact('type'));
     }
 
     /**
@@ -47,7 +56,7 @@ final class TypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Type $type): \Illuminate\Http\JsonResponse
+    public function destroy(Type $type)
     {
         $type->delete();
         flash()->success('type supprimée avec succès');

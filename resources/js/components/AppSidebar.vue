@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import ClasseController from '@/actions/App/Http/Controllers/ClasseController';
+import DepenseController from '@/actions/App/Http/Controllers/DepenseController';
 import FiliereController from '@/actions/App/Http/Controllers/FiliereController';
 import MatiereController from '@/actions/App/Http/Controllers/MatiereController';
 import PeriodeController from '@/actions/App/Http/Controllers/PeriodeController';
 import TeacherController from '@/actions/App/Http/Controllers/TeacherController';
+import TuteurController from '@/actions/App/Http/Controllers/TuteurController';
+import TypeController from '@/actions/App/Http/Controllers/TypeController';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -53,6 +56,21 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Professeur',
         href: TeacherController.index().url,
+        icon: LayoutGrid,
+    },
+    {
+        title: 'type',
+        href: TypeController.index().url,
+        icon: LayoutGrid,
+    },
+    {
+        title: 'depense',
+        href: DepenseController.index().url,
+        icon: LayoutGrid,
+    },
+    {
+        title: 'tuteur',
+        href: TuteurController.index().url,
         icon: LayoutGrid,
     },
 ];

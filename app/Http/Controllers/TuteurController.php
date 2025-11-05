@@ -4,13 +4,26 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Helper\DeleteAction;
-use App\Http\Requests\StoreParentRequest;
 use App\Models\Tuteur;
+use App\Helper\DeleteAction;
+use Illuminate\Http\Request;
+use App\Http\Requests\StoreParentRequest;
 
 final class TuteurController extends Controller
 {
-    use DeleteAction;
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        $rows = Tuteur::query()
+            ->search($request->search, ['nom', 'prenom', 'contact'])
+            ->latest()
+            ->paginate(20)
+            ->withQueryString()->toResourceCollection();
+
+        return inertia('Tuteur/Index', compact('rows'));
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -28,7 +41,7 @@ final class TuteurController extends Controller
      */
     public function show(Tuteur $tuteur)
     {
-        return view('parent.show', compact('matiere'));
+        return inertia('Tuteur/Show', compact('tuteur'));
     }
 
     /**
@@ -36,7 +49,7 @@ final class TuteurController extends Controller
      */
     public function edit(Tuteur $tuteur)
     {
-        return view('parent.update', compact('parent'));
+        return inertia('Tuteur/Edit', compact('tuteur'));
     }
 
     /**
@@ -53,7 +66,7 @@ final class TuteurController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tuteur $tuteur): \Illuminate\Http\JsonResponse
+    public function destroy(Tuteur $tuteur)
     {
         $tuteur->delete();
         flash()->success('tuteur supprimée avec succès');

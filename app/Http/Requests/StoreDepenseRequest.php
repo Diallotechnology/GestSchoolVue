@@ -28,17 +28,11 @@ final class StoreDepenseRequest extends FormRequest
         return [
             'libelle' => 'required|string',
             'montant' => 'integer|required',
-            'user_id' => 'required|exists:users,id',
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
         return flash('la validation a echoué verifiez vos informations!', 'error');
-    }
-
-    protected function prepareForValidation(): void
-    {
-        $this->merge(['user_id' => Auth::user()->id]);
     }
 }

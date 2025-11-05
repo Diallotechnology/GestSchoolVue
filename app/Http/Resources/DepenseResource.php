@@ -13,13 +13,13 @@ final class DepenseResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'motif' => $this->motif,
+            'libelle' => $this->libelle,
             'montant' => $this->montant_format,
-            'user' => $this->whenLoaded('user', fn () => [
+            'user' => $this->whenLoaded('user', fn() => [
                 'email' => $this->user->email,
-                'name' => $this->user->name,
+
             ]),
-            'created_at' => $this->created_at,
+            'created_at' => $this->forDateFormat(),
 
             'can' => [
                 'update' => Gate::allows('update', $this->resource),

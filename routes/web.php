@@ -47,9 +47,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('classe', ClasseController::class)->except('create');
     Route::resource('periode', PeriodeController::class)->except('create');
     Route::resource('matiere', MatiereController::class)->except('create');
-    Route::resource('tuteur', TuteurController::class)->except('create');
+    Route::resource('tuteur', TuteurController::class)->except('create', 'show');
     Route::resource('teacher', TeacherController::class)->except('create');
-    Route::resource('type', TypeController::class)->except('create');
+    Route::resource('type', TypeController::class)->except('create', 'show');
     Route::resource('filiere', FiliereController::class)->except('create');
     Route::resource('personnel', PersonnelController::class)->except('create');
     Route::resource('note', NoteController::class)->except('create', 'store');

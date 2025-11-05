@@ -47,6 +47,15 @@ final class Tuteur extends Model
 
     protected $appends = ['full_name'];
 
+
+    protected function fullName(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => trim(($this->nom ?? '') . ' ' . ($this->prenom ?? '')),
+        );
+    }
+
+
     public static function getCachedList(bool $force = false): Collection
     {
         return self::memoizedCache('teacher_list', function () {

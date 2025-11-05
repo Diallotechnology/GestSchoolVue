@@ -31,38 +31,6 @@ trait DateFormat
 
 
 
-    // public function teacher_view(): string
-    // {
-    //     return $this->teacher ? $this->teacher->prenom . ' ' . $this->teacher->nom : 'inexistant';
-    // }
-
-    // public function parent_view(): string
-    // {
-    //     return $this->tuteur ? $this->tuteur->prenom . ' ' . $this->tuteur->nom : 'inexistant';
-    // }
-
-    // public function student_view(): string
-    // {
-    //     return $this->student ? $this->student->prenom . ' ' . $this->student->nom : 'inexistant';
-    // }
-
-    // public function classe_view(): string
-    // {
-    //     return $this->classe ? $this->classe->nom : 'inexistant';
-    // }
-
-    // public function filiere_view(): string
-    // {
-    //     return $this->classe ? $this->classe->filiere->nom : 'inexistant';
-    // }
-
-    // public function periode_view(): string
-    // {
-    //     return $this->classe ? $this->classe->nom : 'inexistant';
-    // }
-
-
-
     public function forDateRaw(string $field)
     {
         $this->{$field . '_raw'} = optional($this->{$field})->toDateString();
