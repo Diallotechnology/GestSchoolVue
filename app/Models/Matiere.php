@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Helper\DateFormat;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * App\Models\Matiere
@@ -68,6 +69,14 @@ final class Matiere extends Model
      * @var array
      */
     protected $fillable = ['nom', 'coeficient', 'duree'];
+
+    protected function fullName(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->nom . ' ' . 'coeficient' . ' ' . $this->coeficient,
+            set: null
+        );
+    }
 
     /**
      * The teachers that belong to the Matiere

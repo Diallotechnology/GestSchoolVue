@@ -1,11 +1,21 @@
 <script setup lang="ts">
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from '@/components/ui/command';
 import Label from '@/components/ui/label/Label.vue';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Check, ChevronDown, X } from 'lucide-vue-next';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover';
+import { Check, X } from 'lucide-vue-next';
 import type { PropType } from 'vue';
 import { computed, ref, watch } from 'vue';
-import Button from './ui/button/Button.vue';
 
 interface Option {
     id: string | number;
@@ -48,7 +58,9 @@ watch(
     { immediate: true },
 );
 
-const selectedOptions = computed(() => props.options.filter((o) => selectedValues.value.includes(o.id)));
+const selectedOptions = computed(() =>
+    props.options.filter((o) => selectedValues.value.includes(o.id)),
+);
 
 const handleSelect = (value: string | number) => {
     const index = selectedValues.value.indexOf(value);
@@ -73,14 +85,16 @@ const removeTag = (id: string | number) => {
         </Label>
         <Popover v-model:open="open">
             <PopoverTrigger as-child>
-                <Button
+                <button
+                    type="button"
                     id="multi-select-box"
-                    variant="outline"
                     role="combobox"
                     :aria-expanded="open"
-                    class="my-2 w-full justify-between bg-background px-3 py-2 font-normal hover:bg-background"
+                    class="my-2 w-full rounded-md border border-input bg-background px-3 py-2 text-left text-sm ring-offset-background transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
                 >
-                    <div class="flex flex-wrap gap-1">
+                    <div
+                        class="flex min-h-[40px] cursor-pointer flex-wrap items-start gap-1 text-left"
+                    >
                         <template v-if="selectedOptions.length">
                             <span
                                 v-for="opt in selectedOptions"
@@ -88,25 +102,42 @@ const removeTag = (id: string | number) => {
                                 class="flex items-center gap-1 rounded-lg bg-primary/10 px-2 py-0.5 text-sm text-primary"
                             >
                                 {{ opt[label] ?? opt.name }}
-                                <X class="cursor-pointer hover:text-red-500" :size="14" @click.stop="removeTag(opt.id)" />
+                                <X
+                                    class="cursor-pointer hover:text-red-500"
+                                    :size="14"
+                                    @click.stop="removeTag(opt.id)"
+                                />
                             </span>
                         </template>
-                        <span v-else class="text-muted-foreground">
+                        <span v-else class="text-muted-foreground select-none">
                             {{ placeholder }}
                         </span>
                     </div>
-                    <ChevronDown :size="16" :stroke-width="2" class="shrink-0 text-muted-foreground/80" aria-hidden="true" />
-                </Button>
+                </button>
             </PopoverTrigger>
-            <PopoverContent class="w-full min-w-[var(--reka-popper-anchor-width)] p-0" align="start">
+
+            <PopoverContent
+                class="w-full min-w-[var(--reka-popper-anchor-width)] p-0"
+                align="start"
+            >
                 <Command>
                     <CommandInput placeholder="Rechercher..." />
                     <CommandList>
                         <CommandEmpty>Aucun résultat.</CommandEmpty>
                         <CommandGroup>
-                            <CommandItem v-for="option in options" :key="option.id" :value="option.id" @select="() => handleSelect(option.id)">
+                            <CommandItem
+                                v-for="option in options"
+                                :key="option.id"
+                                :value="option.id"
+                                @select="() => handleSelect(option.id)"
+                            >
                                 {{ option[label] ?? option.name }}
-                                <Check v-if="selectedValues.includes(option.id)" :size="16" stroke-width="2" class="ml-auto" />
+                                <Check
+                                    v-if="selectedValues.includes(option.id)"
+                                    :size="16"
+                                    stroke-width="2"
+                                    class="ml-auto"
+                                />
                             </CommandItem>
                         </CommandGroup>
                     </CommandList>

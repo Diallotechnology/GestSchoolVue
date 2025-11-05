@@ -62,6 +62,7 @@ namespace App\Models{
  * @method static Builder<static>|Classe whereFrais($value)
  * @method static Builder<static>|Classe whereScolarite($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Classe search(?string $term, array $columns = [])
  */
 	final class Classe extends \Eloquent {}
 }
@@ -132,6 +133,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Depense whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Depense whereUserId($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Depense search(?string $term, array $columns = [])
  */
 	final class Depense extends \Eloquent {}
 }
@@ -189,6 +191,7 @@ namespace App\Models{
  * @property-read string $montant_format
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Devoir whereCourseId($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Devoir search(?string $term, array $columns = [])
  */
 	final class Devoir extends \Eloquent {}
 }
@@ -229,6 +232,7 @@ namespace App\Models{
  * @property-read mixed $full_name
  * @property-read string $montant_format
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document search(?string $term, array $columns = [])
  */
 	final class Document extends \Eloquent {}
 }
@@ -267,6 +271,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Ue> $ues
  * @property-read int|null $ues_count
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Filiere search(?string $term, array $columns = [])
  */
 	final class Filiere extends \Eloquent {}
 }
@@ -350,6 +355,7 @@ namespace App\Models{
  * @property-read int|null $ues_count
  * @method static Builder<static>|Matiere forUser()
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Matiere search(?string $term, array $columns = [])
  */
 	final class Matiere extends \Eloquent {}
 }
@@ -396,6 +402,7 @@ namespace App\Models{
  * @property-read string $montant_format
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereDiplome($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Note search(?string $term, array $columns = [])
  */
 	final class Note extends \Eloquent {}
 }
@@ -473,6 +480,8 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Ue> $ues
  * @property-read int|null $ues_count
  * @mixin \Eloquent
+ * @property-read string $delai_format
+ * @property-read string $montant_format
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Periode search(?string $term, array $columns = [])
  */
 	final class Periode extends \Eloquent {}
@@ -549,6 +558,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Planning wherePeriodeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Planning whereSalle($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Planning search(?string $term, array $columns = [])
  */
 	final class Planning extends \Eloquent {}
 }
@@ -650,6 +660,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Student whereScolarite($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Student whereTuteurId($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Student search(?string $term, array $columns = [])
  */
 	final class Student extends \Eloquent {}
 }
@@ -704,6 +715,7 @@ namespace App\Models{
  * @property-read string $montant_format
  * @method static Builder<static>|Teacher forUser()
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Teacher search(?string $term, array $columns = [])
  */
 	final class Teacher extends \Eloquent {}
 }
@@ -733,6 +745,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tuteur wherePrenom($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tuteur whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tuteur search(?string $term, array $columns = [])
  */
 	final class Tuteur extends \Eloquent {}
 }
@@ -767,6 +780,7 @@ namespace App\Models{
  * @property-read mixed $full_name
  * @property-read string $montant_format
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Type search(?string $term, array $columns = [])
  */
 	final class Type extends \Eloquent {}
 }
@@ -801,6 +815,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ue wherePeriodeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ue whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ue search(?string $term, array $columns = [])
  */
 	final class Ue extends \Eloquent {}
 }
@@ -819,11 +834,11 @@ namespace App\Models{
  * @property int $two_factor_enabled
  * @property string|null $two_factor_expires_at
  * @property int|null $two_factor_code
- * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property \Carbon\CarbonImmutable|null $email_verified_at
  * @property int $etat
  * @property string|null $remember_token
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Depense> $depenses
  * @property-read int|null $depenses_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications

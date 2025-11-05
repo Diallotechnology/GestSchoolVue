@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -72,6 +73,15 @@ final class Teacher extends Model
     protected $fillable = ['nom', 'prenom', 'contact'];
 
     protected $appends = ['full_name'];
+
+
+    protected function fullName(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->nom . ' ' . $this->prenom . ' ' . $this->contact,
+            set: null
+        );
+    }
 
 
     public static function getCachedList(bool $force = false): Collection

@@ -4,9 +4,19 @@ export interface Users {
     email: string;
 }
 
-export interface Service {
+export interface Filiere {
     id: number;
-    name: string;
+    nom: string;
+}
+
+export interface Matiere {
+    id: number;
+    nom: string;
+}
+
+export interface Classe {
+    id: number;
+    nom: string;
 }
 
 export interface Client {

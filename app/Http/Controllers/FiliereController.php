@@ -10,7 +10,16 @@ use Illuminate\Http\Request;
 
 final class FiliereController extends Controller
 {
-    use DeleteAction;
+    public function index(Request $request)
+    {
+        $rows = Filiere::query()
+            ->search($request->search, ['nom'])
+            ->latest()
+            ->paginate(20)
+            ->withQueryString()->toResourceCollection();
+
+        return inertia('Filiere/Index', compact('rows'));
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -35,7 +44,7 @@ final class FiliereController extends Controller
      */
     public function edit(Filiere $filiere)
     {
-        return view('filiere.update', compact('filiere'));
+        return inertia('Filiere/Edit', compact('filiere'));
     }
 
     /**
@@ -53,10 +62,9 @@ final class FiliereController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $filiere): \Illuminate\Http\JsonResponse
+    public function destroy(Filiere $filiere)
     {
-        $delete = Filiere::findOrFail($filiere);
-
-        return $this->supp($delete);
+        $filiere->delete();
+        flash()->success('Filiere supprimée avec succès');
     }
 }

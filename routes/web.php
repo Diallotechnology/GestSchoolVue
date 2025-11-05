@@ -24,7 +24,7 @@ use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\PersonnelController;
 
 
-Route::get('dashboard', function () {
+Route::get('/', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 

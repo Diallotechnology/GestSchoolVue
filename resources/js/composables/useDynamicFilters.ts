@@ -59,21 +59,28 @@ export function useDynamicFilters<T extends Record<string, any>>(
   }
 
   function reload() {
-    const payload: Record<string, any> = {};
+  const payload: Record<string, any> = {};
 
-    for (const key in filters) {
-      const k = key as keyof T;
-      payload[k as string] = debounced[k]?.value ?? filters[k].value ?? null;
+  for (const key in filters) {
+    const k = key as keyof T;
+    const value = debounced[k]?.value ?? filters[k].value ?? null;
+
+    // Ne garde que les valeurs significatives
+    if (value !== null && value !== '' && value !== undefined) {
+      payload[k as string] = value;
     }
-
-    payload.start = date.value?.start ?? null;
-    payload.end = date.value?.end ?? null;
-
-    router.get(options.controller.index().url, payload, {
-      preserveState: true,
-      replace: true,
-    });
   }
+
+  // ✅ Idem pour le range de dates
+  if (date.value?.start) payload.start = date.value.start;
+  if (date.value?.end) payload.end = date.value.end;
+
+  router.get(options.controller.index().url, payload, {
+    preserveState: true,
+    replace: true,
+  });
+}
+
 
   for (const key in filters) {
     const k = key as keyof T;

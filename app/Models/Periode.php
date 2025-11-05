@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Helper\CacheHelper;
+use App\Helper\DateFormat;
 use App\Helper\HasSearch;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -44,7 +45,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 final class Periode extends Model
 {
-    use HasFactory, CacheHelper, HasSearch;
+    use DateFormat;
 
     protected $fillable = ['nom'];
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PeriodeController from '@/actions/App/Http/Controllers/PeriodeController';
+import FiliereController from '@/actions/App/Http/Controllers/FiliereController';
 import ButtonDelete from '@/components/ButtonDelete.vue';
 import ButtonEdit from '@/components/ButtonEdit.vue';
 import InputError from '@/components/InputError.vue';
@@ -28,8 +28,8 @@ import { computed } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'liste des periodes',
-        href: '/periode',
+        title: 'liste des filieres',
+        href: '/filiere',
     },
 ];
 
@@ -48,7 +48,7 @@ const { filters, reset } = useDynamicFilters(
         search: '',
     },
     {
-        controller: PeriodeController, // ✅ Wayfinder
+        controller: FiliereController, // ✅ Wayfinder
         debounceKeys: ['search'],
         delay: 300,
         persist: true,
@@ -61,7 +61,7 @@ const filteredRows = computed(() => {
 });
 </script>
 <template>
-    <Head title="Liste des périodes" />
+    <Head title="Liste des filieres" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-wrap items-center justify-between gap-4 p-4">
             <!-- Barre de recherche et filtre -->
@@ -94,9 +94,9 @@ const filteredRows = computed(() => {
                 </Button>
             </div>
 
-            <Modal title="Formulaire de nouvelle periode">
+            <Modal title="Formulaire de nouvelle filiere">
                 <Form
-                    :action="PeriodeController.store()"
+                    :action="FiliereController.store()"
                     method="post"
                     reset-on-success
                     v-slot="{ errors, processing }"
@@ -147,11 +147,11 @@ const filteredRows = computed(() => {
                     <TableCell>{{ row.created_at }}</TableCell>
                     <TableCell class="flex">
                         <ButtonEdit
-                            :href="PeriodeController.edit({ id: row.id }).url"
+                            :href="FiliereController.edit({ id: row.id }).url"
                         />
                         <ButtonDelete
                             :href="
-                                PeriodeController.destroy({ id: row.id }).url
+                                FiliereController.destroy({ id: row.id }).url
                             "
                         />
                     </TableCell>

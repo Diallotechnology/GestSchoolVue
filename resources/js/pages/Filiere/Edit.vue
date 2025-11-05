@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PeriodeController from '@/actions/App/Http/Controllers/PeriodeController';
+import FiliereController from '@/actions/App/Http/Controllers/FiliereController';
 import InputError from '@/components/InputError.vue';
 import Button from '@/components/ui/button/Button.vue';
 import Card from '@/components/ui/card/Card.vue';
@@ -13,13 +13,13 @@ import { Form, Head, Link, router } from '@inertiajs/vue3';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Modifier periode',
-        href: '/periode/edit',
+        title: 'Modifier filiere',
+        href: '/filiere/edit',
     },
 ];
 
 const props = defineProps<{
-    periode: {
+    filiere: {
         id: number;
         nom: string;
     };
@@ -37,12 +37,12 @@ const props = defineProps<{
             </CardTitle>
             <CardContent class="justify-center p-4">
                 <Form
-                    :action="PeriodeController.update(periode.id)"
+                    :action="FiliereController.update(filiere.id)"
                     method="post"
                     @finish="
                         () =>
                             router.reload({
-                                only: ['periode'],
+                                only: ['filiere'],
                             })
                     "
                     v-slot="{ errors, processing }"
@@ -56,15 +56,15 @@ const props = defineProps<{
                             class="mt-1 block w-full"
                             name="nom"
                             required
-                            :defaultValue="props.periode.nom"
-                            placeholder="nom de la periode"
+                            :defaultValue="props.filiere.nom"
+                            placeholder="nom de la filiere"
                         />
                         <InputError class="mt-2" :message="errors.nom" />
                     </div>
 
                     <div class="mt-4 flex justify-center">
                         <Link
-                            :href="PeriodeController.index().url"
+                            :href="FiliereController.index().url"
                             class="mx-3"
                         >
                             <Button variant="destructive" :disabled="processing"

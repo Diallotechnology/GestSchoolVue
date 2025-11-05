@@ -4,17 +4,29 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Helper\DeleteAction;
-use App\Http\Requests\StoreTeacherRequest;
+use Log;
 use App\Models\Classe;
 use App\Models\Matiere;
 use App\Models\Teacher;
+use App\Helper\DeleteAction;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Log;
+use App\Http\Requests\StoreTeacherRequest;
 
 final class TeacherController extends Controller
 {
-    use DeleteAction;
+    public function index(Request $request)
+    {
+        $rows = Teacher::query()->with('classes:id,nom', 'matieres:id,nom')
+            ->search($request->search, ['nom', 'prenom', 'contact'])
+            ->latest()
+            ->paginate(20)
+            ->withQueryString()->toResourceCollection();
+
+        $matieres = Matiere::select('id', 'nom', 'coeficient')->get();
+        $classes = Classe::select('id', 'nom', 'filiere_id')->get();
+        return inertia('Teacher/Index', compact('rows', 'classes', 'matieres'));
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -50,10 +62,11 @@ final class TeacherController extends Controller
      */
     public function edit(Teacher $teacher)
     {
-        $matiere = Matiere::all();
-        $classe = Classe::all();
+        $teacher->loadMissing('matieres:id,nom', 'classes:id,nom,filiere_id');
+        $matieres = Matiere::select('id', 'nom', 'coeficient')->get();
+        $classes = Classe::select('id', 'nom', 'filiere_id')->get();
 
-        return view('teacher.update', compact('teacher', 'matiere', 'classe'));
+        return inertia('Teacher/Edit', compact('teacher', 'matieres', 'classes'));
     }
 
     /**

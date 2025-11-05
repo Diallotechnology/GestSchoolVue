@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PeriodeController from '@/actions/App/Http/Controllers/PeriodeController';
+import MatiereController from '@/actions/App/Http/Controllers/MatiereController';
 import ButtonDelete from '@/components/ButtonDelete.vue';
 import ButtonEdit from '@/components/ButtonEdit.vue';
 import InputError from '@/components/InputError.vue';
@@ -28,14 +28,16 @@ import { computed } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'liste des periodes',
-        href: '/periode',
+        title: 'liste des matières',
+        href: '/matiere',
     },
 ];
 
 interface Row {
     id: number;
     nom: string;
+    coeficient: number;
+    duree: number;
     created_at: string;
 }
 
@@ -48,7 +50,7 @@ const { filters, reset } = useDynamicFilters(
         search: '',
     },
     {
-        controller: PeriodeController, // ✅ Wayfinder
+        controller: MatiereController, // ✅ Wayfinder
         debounceKeys: ['search'],
         delay: 300,
         persist: true,
@@ -61,7 +63,7 @@ const filteredRows = computed(() => {
 });
 </script>
 <template>
-    <Head title="Liste des périodes" />
+    <Head title="Liste des matières" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-wrap items-center justify-between gap-4 p-4">
             <!-- Barre de recherche et filtre -->
@@ -94,9 +96,9 @@ const filteredRows = computed(() => {
                 </Button>
             </div>
 
-            <Modal title="Formulaire de nouvelle periode">
+            <Modal title="Formulaire de nouvelle matière">
                 <Form
-                    :action="PeriodeController.store()"
+                    :action="MatiereController.store()"
                     method="post"
                     reset-on-success
                     v-slot="{ errors, processing }"
@@ -110,9 +112,33 @@ const filteredRows = computed(() => {
                             class="mt-1 block w-full"
                             name="nom"
                             required
-                            placeholder="nom de la periode"
+                            placeholder="nom de la matière"
                         />
                         <InputError class="mt-2" :message="errors.nom" />
+                    </div>
+                    <div class="grid gap-2">
+                        <Label for="coeficient">Coeficient</Label>
+                        <Input
+                            id="coeficient"
+                            type="number"
+                            class="mt-1 block w-full"
+                            name="coeficient"
+                            required
+                            placeholder="nom de la matière"
+                        />
+                        <InputError class="mt-2" :message="errors.coeficient" />
+                    </div>
+                    <div class="grid gap-2">
+                        <Label for="duree">Duree</Label>
+                        <Input
+                            id="duree"
+                            type="number"
+                            class="mt-1 block w-full"
+                            name="duree"
+                            required
+                            placeholder="duree de la matière"
+                        />
+                        <InputError class="mt-2" :message="errors.duree" />
                     </div>
 
                     <div class="mt-4 flex justify-center">
@@ -136,6 +162,8 @@ const filteredRows = computed(() => {
                 <TableRow>
                     <TableHead> Id </TableHead>
                     <TableHead>nom</TableHead>
+                    <TableHead>coeficient</TableHead>
+                    <TableHead>duree</TableHead>
                     <TableHead>date de creation </TableHead>
                     <TableHead>Action </TableHead>
                 </TableRow>
@@ -144,14 +172,16 @@ const filteredRows = computed(() => {
                 <TableRow v-for="row in filteredRows" :key="row.id">
                     <TableCell>{{ row.id }}</TableCell>
                     <TableCell>{{ row.nom }}</TableCell>
+                    <TableCell>{{ row.coeficient }}</TableCell>
+                    <TableCell>{{ row.duree }}</TableCell>
                     <TableCell>{{ row.created_at }}</TableCell>
                     <TableCell class="flex">
                         <ButtonEdit
-                            :href="PeriodeController.edit({ id: row.id }).url"
+                            :href="MatiereController.edit({ id: row.id }).url"
                         />
                         <ButtonDelete
                             :href="
-                                PeriodeController.destroy({ id: row.id }).url
+                                MatiereController.destroy({ id: row.id }).url
                             "
                         />
                     </TableCell>

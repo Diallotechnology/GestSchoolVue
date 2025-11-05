@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import PeriodeController from '@/actions/App/Http/Controllers/PeriodeController';
+import ClasseController from '@/actions/App/Http/Controllers/ClasseController';
 import ButtonDelete from '@/components/ButtonDelete.vue';
 import ButtonEdit from '@/components/ButtonEdit.vue';
 import InputError from '@/components/InputError.vue';
 import Modal from '@/components/Modal.vue';
 import Pagination from '@/components/Pagination.vue';
+import Select2 from '@/components/Select2.vue';
+import SelectTag from '@/components/SelectTag.vue';
 import AlertDialogAction from '@/components/ui/alert-dialog/AlertDialogAction.vue';
 import AlertDialogCancel from '@/components/ui/alert-dialog/AlertDialogCancel.vue';
 import Button from '@/components/ui/button/Button.vue';
@@ -22,25 +24,55 @@ import { useDynamicFilters } from '@/composables/useDynamicFilters';
 import { useVModelRef } from '@/composables/useVModelRef';
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem, PaginatedData } from '@/types';
-import { Form, Head } from '@inertiajs/vue3';
+import { Filiere, Matiere } from '@/types/models';
+import { Head, useForm } from '@inertiajs/vue3';
 import { SearchIcon, X } from 'lucide-vue-next';
 import { computed } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'liste des periodes',
-        href: '/periode',
+        title: 'liste des classes',
+        href: '/classe',
     },
 ];
 
 interface Row {
     id: number;
     nom: string;
+    scolarite: string;
+    frais: string;
+    filiere: {
+        id: number;
+        nom: string;
+    };
+    matieres: {
+        id: number;
+        nom: string;
+    };
     created_at: string;
 }
 
+const form = useForm({
+    nom: '',
+    filiere_id: '',
+    matiere_id: [],
+    scolarite: 0,
+    frais: 0,
+});
+
+const submit = () => {
+    form.post(ClasseController.store().url, {
+        preserveScroll: true,
+        onSuccess: () => {
+            form.reset();
+        },
+    });
+};
+
 const props = defineProps<{
     rows: PaginatedData<Row>;
+    filieres: Filiere[];
+    matieres: Matiere[];
 }>();
 
 const { filters, reset } = useDynamicFilters(
@@ -48,7 +80,7 @@ const { filters, reset } = useDynamicFilters(
         search: '',
     },
     {
-        controller: PeriodeController, // ✅ Wayfinder
+        controller: ClasseController, // ✅ Wayfinder
         debounceKeys: ['search'],
         delay: 300,
         persist: true,
@@ -61,7 +93,7 @@ const filteredRows = computed(() => {
 });
 </script>
 <template>
-    <Head title="Liste des périodes" />
+    <Head title="Liste des classes" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex flex-wrap items-center justify-between gap-4 p-4">
             <!-- Barre de recherche et filtre -->
@@ -94,41 +126,92 @@ const filteredRows = computed(() => {
                 </Button>
             </div>
 
-            <Modal title="Formulaire de nouvelle periode">
-                <Form
-                    :action="PeriodeController.store()"
-                    method="post"
-                    reset-on-success
-                    v-slot="{ errors, processing }"
-                    class="flex flex-col gap-6"
-                >
+            <Modal title="Formulaire de nouvelle classe">
+                <form @submit.prevent="submit">
                     <div class="grid gap-2">
                         <Label for="nom">Nom</Label>
                         <Input
                             id="nom"
                             type="text"
                             class="mt-1 block w-full"
-                            name="nom"
+                            v-model="form.nom"
                             required
-                            placeholder="nom de la periode"
+                            placeholder="nom de la classe"
                         />
-                        <InputError class="mt-2" :message="errors.nom" />
+                        <InputError class="mt-2" :message="form.errors.nom" />
+                    </div>
+
+                    <div class="grid gap-2">
+                        <Label for="filiere">Filière</Label>
+                        <Select2
+                            :options="filieres"
+                            label="nom"
+                            v-model="form.filiere_id"
+                            placeholder="Choisir une filière"
+                        />
+                        <InputError
+                            class="mt-2"
+                            :message="form.errors.filiere_id"
+                        />
+                    </div>
+
+                    <div class="grid gap-2">
+                        <Label for="filiere">les matieres enseignes</Label>
+                        <SelectTag
+                            v-model="form.matiere_id"
+                            :options="matieres"
+                            label="nom"
+                            placeholder="Choisir les matieres"
+                        />
+                        <InputError
+                            class="mt-2"
+                            :message="form.errors.matiere_id"
+                        />
+                    </div>
+
+                    <div class="grid gap-2">
+                        <Label for="scolarite">Scolarité</Label>
+                        <Input
+                            id="scolarite"
+                            type="number"
+                            class="mt-1 block w-full"
+                            v-model="form.scolarite"
+                            required
+                            placeholder="nom de la classe"
+                        />
+                        <InputError
+                            class="mt-2"
+                            :message="form.errors.scolarite"
+                        />
+                    </div>
+
+                    <div class="grid gap-2">
+                        <Label for="frais">Frais</Label>
+                        <Input
+                            id="frais"
+                            type="number"
+                            class="mt-1 block w-full"
+                            v-model="form.frais"
+                            required
+                            placeholder="nom de la classe"
+                        />
+                        <InputError class="mt-2" :message="form.errors.frais" />
                     </div>
 
                     <div class="mt-4 flex justify-center">
-                        <AlertDialogCancel :disabled="processing"
+                        <AlertDialogCancel :disabled="form.processing"
                             >Annuler</AlertDialogCancel
                         >
                         <AlertDialogAction
                             type="submit"
                             class="mx-3"
-                            :disabled="processing"
-                            :class="{ 'opacity-50': processing }"
+                            :disabled="form.processing"
+                            :class="{ 'opacity-50': form.processing }"
                         >
-                            {{ processing ? 'Validation...' : 'Valider' }}
+                            {{ form.processing ? 'Validation...' : 'Valider' }}
                         </AlertDialogAction>
                     </div>
-                </Form>
+                </form>
             </Modal>
         </div>
         <Table>
@@ -136,6 +219,10 @@ const filteredRows = computed(() => {
                 <TableRow>
                     <TableHead> Id </TableHead>
                     <TableHead>nom</TableHead>
+                    <TableHead>scolarite</TableHead>
+                    <TableHead>frais</TableHead>
+                    <TableHead>filiere</TableHead>
+                    <TableHead>matieres </TableHead>
                     <TableHead>date de creation </TableHead>
                     <TableHead>Action </TableHead>
                 </TableRow>
@@ -144,15 +231,25 @@ const filteredRows = computed(() => {
                 <TableRow v-for="row in filteredRows" :key="row.id">
                     <TableCell>{{ row.id }}</TableCell>
                     <TableCell>{{ row.nom }}</TableCell>
+                    <TableCell>{{ row.scolarite }}</TableCell>
+                    <TableCell>{{ row.frais }}</TableCell>
+                    <TableCell>{{ row.filiere.nom }}</TableCell>
+                    <TableCell>
+                        <div
+                            v-for="(item, index) in row.matieres || []"
+                            :key="index"
+                            class="flex items-center gap-1"
+                        >
+                            <span>{{ item }}</span>
+                        </div>
+                    </TableCell>
                     <TableCell>{{ row.created_at }}</TableCell>
                     <TableCell class="flex">
                         <ButtonEdit
-                            :href="PeriodeController.edit({ id: row.id }).url"
+                            :href="ClasseController.edit({ id: row.id }).url"
                         />
                         <ButtonDelete
-                            :href="
-                                PeriodeController.destroy({ id: row.id }).url
-                            "
+                            :href="ClasseController.destroy({ id: row.id }).url"
                         />
                     </TableCell>
                 </TableRow>

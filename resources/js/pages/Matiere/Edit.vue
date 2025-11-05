@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PeriodeController from '@/actions/App/Http/Controllers/PeriodeController';
+import MatiereController from '@/actions/App/Http/Controllers/MatiereController';
 import InputError from '@/components/InputError.vue';
 import Button from '@/components/ui/button/Button.vue';
 import Card from '@/components/ui/card/Card.vue';
@@ -13,15 +13,17 @@ import { Form, Head, Link, router } from '@inertiajs/vue3';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Modifier periode',
-        href: '/periode/edit',
+        title: 'Modifier matiere',
+        href: '/matiere/edit',
     },
 ];
 
 const props = defineProps<{
-    periode: {
+    matiere: {
         id: number;
         nom: string;
+        coeficient: number;
+        duree: number;
     };
 }>();
 </script>
@@ -37,12 +39,12 @@ const props = defineProps<{
             </CardTitle>
             <CardContent class="justify-center p-4">
                 <Form
-                    :action="PeriodeController.update(periode.id)"
+                    :action="MatiereController.update(matiere.id)"
                     method="post"
                     @finish="
                         () =>
                             router.reload({
-                                only: ['periode'],
+                                only: ['matiere'],
                             })
                     "
                     v-slot="{ errors, processing }"
@@ -56,15 +58,42 @@ const props = defineProps<{
                             class="mt-1 block w-full"
                             name="nom"
                             required
-                            :defaultValue="props.periode.nom"
-                            placeholder="nom de la periode"
+                            :defaultValue="props.matiere.nom"
+                            placeholder="nom de la matière"
                         />
                         <InputError class="mt-2" :message="errors.nom" />
                     </div>
 
+                    <div class="grid gap-2">
+                        <Label for="coeficient">Coeficient</Label>
+                        <Input
+                            id="coeficient"
+                            type="number"
+                            class="mt-1 block w-full"
+                            name="coeficient"
+                            required
+                            :defaultValue="props.matiere.coeficient"
+                            placeholder="coeficient de la matière"
+                        />
+                        <InputError class="mt-2" :message="errors.coeficient" />
+                    </div>
+                    <div class="grid gap-2">
+                        <Label for="duree">Duree</Label>
+                        <Input
+                            id="duree"
+                            type="number"
+                            class="mt-1 block w-full"
+                            name="duree"
+                            required
+                            :defaultValue="props.matiere.duree"
+                            placeholder="duree de la matière"
+                        />
+                        <InputError class="mt-2" :message="errors.duree" />
+                    </div>
+
                     <div class="mt-4 flex justify-center">
                         <Link
-                            :href="PeriodeController.index().url"
+                            :href="MatiereController.index().url"
                             class="mx-3"
                         >
                             <Button variant="destructive" :disabled="processing"

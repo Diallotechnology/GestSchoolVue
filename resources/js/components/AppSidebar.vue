@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import ClasseController from '@/actions/App/Http/Controllers/ClasseController';
+import FiliereController from '@/actions/App/Http/Controllers/FiliereController';
+import MatiereController from '@/actions/App/Http/Controllers/MatiereController';
+import PeriodeController from '@/actions/App/Http/Controllers/PeriodeController';
+import TeacherController from '@/actions/App/Http/Controllers/TeacherController';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -25,6 +30,31 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
+    {
+        title: 'Filiere',
+        href: FiliereController.index().url,
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Periode',
+        href: PeriodeController.index().url,
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Matiere',
+        href: MatiereController.index().url,
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Classe',
+        href: ClasseController.index().url,
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Professeur',
+        href: TeacherController.index().url,
+        icon: LayoutGrid,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
@@ -41,7 +71,6 @@ const footerNavItems: NavItem[] = [
 ];
 
 // Récup user
-const { auth } = usePage().props;
 const page = usePage<AppPageProps>();
 // Messages flash
 const localMessages = ref<Record<string, any>>({});

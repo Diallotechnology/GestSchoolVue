@@ -4,15 +4,29 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Helper\DeleteAction;
-use App\Http\Requests\StoreClasseRequest;
 use App\Models\Classe;
 use App\Models\Filiere;
 use App\Models\Matiere;
+use App\Helper\DeleteAction;
+use Illuminate\Http\Request;
+use App\Http\Requests\StoreClasseRequest;
 
 final class ClasseController extends Controller
 {
-    use DeleteAction;
+
+    public function index(Request $request)
+    {
+        $rows = Classe::query()->with('filiere:id,nom', 'matieres:id,nom')
+            ->search($request->search, ['nom'])
+            ->latest()
+            ->paginate(20)
+            ->withQueryString()->toResourceCollection();
+
+        // dd($rows);
+        $filieres = Filiere::select('id', 'nom')->get();
+        $matieres = Matiere::select('id', 'nom', 'coeficient')->get();
+        return inertia('Classe/Index', compact('rows', 'filieres', 'matieres'));
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -40,10 +54,11 @@ final class ClasseController extends Controller
      */
     public function edit(Classe $classe)
     {
-        $matiere = Matiere::all();
-        $filiere = Filiere::all();
+        $classe->loadMissing('matieres:id,nom', 'filiere:id,nom');
+        $matieres = Matiere::select('id', 'nom')->get();
+        $filieres = Filiere::select('id', 'nom')->get();
 
-        return view('classe.update', compact('classe', 'matiere', 'filiere'));
+        return inertia('Classe/Edit', compact('classe', 'matieres', 'filieres'));
     }
 
     /**

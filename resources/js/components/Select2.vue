@@ -1,7 +1,18 @@
 <script setup lang="ts">
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from '@/components/ui/command';
 import Label from '@/components/ui/label/Label.vue';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { Check, ChevronDown } from 'lucide-vue-next';
 import type { PropType } from 'vue';
@@ -50,7 +61,9 @@ watch(
 );
 
 const selectedOption = computed(() => {
-    const found = props.options.find((option) => option.id == selectedValue.value);
+    const found = props.options.find(
+        (option) => option.id == selectedValue.value,
+    );
     return found?.[props.label] ?? '';
 });
 
@@ -77,21 +90,46 @@ const handleSelect = (value: string | number) => {
                     :aria-expanded="open"
                     class="my-2 w-full justify-between bg-background px-3 py-2 font-normal hover:bg-background"
                 >
-                    <span :class="cn('truncate', !selectedValue && 'text-muted-foreground')">
+                    <span
+                        :class="
+                            cn(
+                                'truncate',
+                                !selectedValue && 'text-muted-foreground',
+                            )
+                        "
+                    >
                         {{ selectedOption || placeholder }}
                     </span>
-                    <ChevronDown :size="16" :stroke-width="2" class="shrink-0 text-muted-foreground/80" aria-hidden="true" />
+                    <ChevronDown
+                        :size="16"
+                        :stroke-width="2"
+                        class="shrink-0 text-muted-foreground/80"
+                        aria-hidden="true"
+                    />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent class="w-full min-w-[var(--reka-popper-anchor-width)] p-0" align="start">
+            <PopoverContent
+                class="w-full min-w-[var(--reka-popper-anchor-width)] p-0"
+                align="start"
+            >
                 <Command>
                     <CommandInput :placeholder="`Recherché un element...`" />
                     <CommandList>
                         <CommandEmpty>Aucun resultat.</CommandEmpty>
                         <CommandGroup>
-                            <CommandItem v-for="option in options" :key="option.id" :value="option.id" @select="() => handleSelect(option.id)">
+                            <CommandItem
+                                v-for="option in options"
+                                :key="option.id"
+                                :value="option.id"
+                                @select="() => handleSelect(option.id)"
+                            >
                                 {{ option[label] ?? option.name }}
-                                <Check v-if="selectedValue == option.id" :size="16" stroke-width="2" class="ml-auto" />
+                                <Check
+                                    v-if="selectedValue == option.id"
+                                    :size="16"
+                                    stroke-width="2"
+                                    class="ml-auto"
+                                />
                             </CommandItem>
                         </CommandGroup>
                     </CommandList>

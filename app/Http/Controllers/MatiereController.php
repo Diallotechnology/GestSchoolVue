@@ -4,13 +4,25 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Helper\DeleteAction;
-use App\Http\Requests\StoreMatiereRequest;
 use App\Models\Matiere;
+use App\Helper\DeleteAction;
+use Illuminate\Http\Request;
+use App\Http\Requests\StoreMatiereRequest;
 
 final class MatiereController extends Controller
 {
     use DeleteAction;
+
+    public function index(Request $request)
+    {
+        $rows = Matiere::query()
+            ->search($request->search, ['nom', 'coeficient', 'duree'])
+            ->latest()
+            ->paginate(20)
+            ->withQueryString()->toResourceCollection();
+
+        return inertia('Matiere/Index', compact('rows'));
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -20,8 +32,6 @@ final class MatiereController extends Controller
         Matiere::create($request->validated());
 
         flash('Matiere ajouter avec success!');
-
-        return back();
     }
 
     /**
@@ -37,7 +47,7 @@ final class MatiereController extends Controller
      */
     public function edit(Matiere $matiere)
     {
-        return view('matiere.update', compact('matiere'));
+        return inertia('Matiere/Edit', compact('matiere'));
     }
 
     /**
@@ -45,10 +55,8 @@ final class MatiereController extends Controller
      */
     public function update(StoreMatiereRequest $request, Matiere $matiere)
     {
-        $matiere->update($request->validated());
+        $matiere->updateOrFail($request->validated());
         flash('Matiere mise à jour avec success!');
-
-        return back();
     }
 
     /**
