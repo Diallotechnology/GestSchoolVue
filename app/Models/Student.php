@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use App\Helper\HasUniqueReference;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -94,6 +95,14 @@ final class Student extends Model
     protected static array $cacheKeys = [
         'count_students',
     ];
+
+    protected function fullName(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => trim(($this->nom ?? '') . ' ' . ($this->prenom ?? '') . ' ' . ($this->reference ?? '')),
+        );
+    }
+
 
     public function user(): MorphOne
     {

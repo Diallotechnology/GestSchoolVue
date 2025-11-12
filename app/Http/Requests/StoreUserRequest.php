@@ -28,10 +28,30 @@ final class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'userable_id' => ['required', 'string'],
+            'userable_id' => ['required', 'integer'],
             'sexe' => ['required', 'string'],
             'role' => ['required', new Enum(RoleEnum::class)],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'email.unique' => 'Email déjà utilisé',
+            'userable_id.required' => 'Sélectionner un utilisateur',
+            'role.required' => 'Sélectionner un rôle',
+            'sexe.required' => 'Sélectionner un sexe',
+            'email.required' => 'Email obligatoire',
+            'email.email' => 'Email invalide',
+            'email.max' => 'Email trop long',
+            'userable_id.integer' => 'Sélectionner un utilisateur',
+            'role.enum' => 'Sélectionner un rôle',
+            'sexe.string' => 'Sélectionner un sexe',
+            'email.string' => 'Email invalide',
+            'email.max' => 'Email trop long',
+            'userable_id.integer' => 'Sélectionner un utilisateur',
+            'role.enum' => 'Sélectionner un rôle',
         ];
     }
 

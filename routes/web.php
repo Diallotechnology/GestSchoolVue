@@ -42,7 +42,8 @@ Route::middleware('auth')->group(function () {
     // Route::get('user', UserIndex::class)->name('user.index');
     // Route::get('user/create', UserCreate::class)->name('user.create');
     // Route::get('note/create', NoteCreate::class)->name('note.create');
-    Route::resource('user', UserController::class)->except('create');
+    Route::resource('user', UserController::class);
+    Route::get('fetch_by_Role', [UserController::class, 'fetch_Role'])->name('user.fetchByRole');
     Route::resource('student', StudentController::class)->except('create');
     Route::resource('classe', ClasseController::class)->except('create');
     Route::resource('periode', PeriodeController::class)->except('create');

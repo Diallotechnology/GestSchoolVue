@@ -19,6 +19,12 @@ export interface Classe {
     nom: string;
 }
 
+export interface RoleOption {
+    id: string;
+    nom: string;
+}
+
+
 export interface Client {
     id: number;
     nom: string;

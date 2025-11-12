@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Database\Eloquent\Model;
@@ -42,25 +43,30 @@ class AppServiceProvider extends ServiceProvider
         Builder::macro('dateRange', function ($requestOrStart, ?string $end = null, string $column = 'created_at') {
             /** @var Builder $this */
 
-            // Cas 1 : on reçoit un Request
             if ($requestOrStart instanceof Request) {
                 $start = $requestOrStart->input('start');
                 $end = $requestOrStart->input('end');
             } else {
-                // Cas 2 : on reçoit directement start/end
                 $start = $requestOrStart;
             }
 
+            // ✅ Si les deux dates sont définies
             if ($start && $end) {
-                return $this->whereBetween($column, [$start, $end]);
+                $startDate = Carbon::parse($start)->startOfDay();
+                $endDate = Carbon::parse($end)->endOfDay();
+                return $this->whereBetween($column, [$startDate, $endDate]);
             }
 
+            // ✅ Si une seule date de début
             if ($start) {
-                return $this->where($column, '>=', $start);
+                $startDate = Carbon::parse($start)->startOfDay();
+                return $this->where($column, '>=', $startDate);
             }
 
+            // ✅ Si une seule date de fin
             if ($end) {
-                return $this->where($column, '<=', $end);
+                $endDate = Carbon::parse($end)->endOfDay();
+                return $this->where($column, '<=', $endDate);
             }
 
             return $this;

@@ -4,20 +4,60 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Helper\DeleteAction;
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
-use App\Jobs\MailNotificationJob;
-use App\Models\Personnel;
+use App\Models\User;
+use App\Enum\RoleEnum;
+use App\Models\Tuteur;
 use App\Models\Student;
 use App\Models\Teacher;
-use App\Models\Tuteur;
-use App\Models\User;
+use App\Models\Personnel;
+use App\Helper\DeleteAction;
+use Illuminate\Http\Request;
+use App\Jobs\MailNotificationJob;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 
 final class UserController extends Controller
 {
-    use DeleteAction;
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        $rows = User::query()
+            ->when($request->filled('search'), fn($query) => $query->whereAny(['role', 'name', 'email'], 'like', '%' . $request->search . '%'))
+            ->when($request->filled('role'), fn($query) => $query->where('role', $request->role))
+            ->latest()
+            ->paginate(15)
+            ->toResourceCollection();
+
+        $roles = RoleEnum::all();
+
+        return inertia('User/Index', compact('rows', 'roles'));
+    }
+
+    public function fetch_Role(Request $request)
+    {
+        $request->validate(['role' => ['required', 'string']]);
+
+        $role = $request->query('role');
+
+        $users = match ($role) {
+            RoleEnum::TEACHER->value      => Teacher::select('id', 'nom', 'prenom', 'contact')->get(),
+            RoleEnum::STUDENT->value      => Student::select('id', 'nom', 'prenom', 'reference')->get(),
+            RoleEnum::PARENT->value       => Tuteur::select('id', 'nom', 'prenom')->get(),
+            RoleEnum::ADMIN->value,
+            RoleEnum::ASSISTANT->value,
+            RoleEnum::COMPTABLE->value,
+            RoleEnum::DG->value,
+            RoleEnum::SURVEILLANT->value  => Personnel::select('id', 'nom', 'prenom')->get(),
+            default                       => collect(),
+        };
+        // dd($users);
+        return response()->json($users);
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -25,17 +65,21 @@ final class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         $validate = $request->validated();
-        if ($validate['role'] === 'Professeur') {
-            $parent = Teacher::findOrFail($validate['userable_id']);
-        } elseif ($validate['role'] === 'Etudiant') {
-            $parent = Student::findOrFail($validate['userable_id']);
-        } elseif ($validate['role'] === 'Parent') {
-            $parent = Tuteur::findOrFail($validate['userable_id']);
-        } elseif ($validate['role'] === 'Administration') {
-            $parent = Personnel::findOrFail($validate['userable_id']);
-        }
-        $user = $parent->user()->create($request->safe()->except(['userable_id']));
-        MailNotificationJob::dispatch($user);
+        $roleEnum = RoleEnum::from($validate['role']);
+
+        $parent = match ($roleEnum) {
+            RoleEnum::TEACHER     => Teacher::findOrFail($validate['userable_id']),
+            RoleEnum::STUDENT       => Student::findOrFail($validate['userable_id']),
+            RoleEnum::PARENT         => Tuteur::findOrFail($validate['userable_id']),
+            RoleEnum::ADMIN->value,
+            RoleEnum::ASSISTANT->value,
+            RoleEnum::COMPTABLE->value,
+            RoleEnum::DG->value,
+            RoleEnum::SURVEILLANT->value  => Personnel::findOrFail($validate['userable_id']),
+        };
+
+        $user = $parent->user()->create($request->safe()->only(['email', 'sexe', 'role']));
+        // MailNotificationJob::dispatch($user);
         flash('Utilisateur ajouter avec success!');
 
         return back();
@@ -90,7 +134,7 @@ final class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user): \Illuminate\Http\JsonResponse
+    public function destroy(User $user)
     {
         $user->delete();
         flash()->success('user supprimée avec succès');

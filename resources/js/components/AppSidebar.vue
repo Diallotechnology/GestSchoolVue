@@ -7,6 +7,7 @@ import PeriodeController from '@/actions/App/Http/Controllers/PeriodeController'
 import TeacherController from '@/actions/App/Http/Controllers/TeacherController';
 import TuteurController from '@/actions/App/Http/Controllers/TuteurController';
 import TypeController from '@/actions/App/Http/Controllers/TypeController';
+import UserController from '@/actions/App/Http/Controllers/UserController';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -71,6 +72,11 @@ const mainNavItems: NavItem[] = [
     {
         title: 'tuteur',
         href: TuteurController.index().url,
+        icon: LayoutGrid,
+    },
+    {
+        title: 'user',
+        href: UserController.index().url,
         icon: LayoutGrid,
     },
 ];
