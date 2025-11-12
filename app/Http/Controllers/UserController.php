@@ -100,16 +100,16 @@ final class UserController extends Controller
      */
     public function edit(User $user)
     {
-        Gate::authorize('update', $user);
+        // Gate::authorize('update', $user);
         $parents = match ($user->role->value) {
-            'Professeur' => Teacher::select('id', 'prenom', 'nom')->get(),
-            'Etudiant' => Student::select('id', 'prenom', 'nom')->get(),
+            'Professeur' => Teacher::select('id', 'prenom', 'nom', 'contact')->get(),
+            'Etudiant' => Student::select('id', 'prenom', 'nom', 'reference')->get(),
             'Parent' => Tuteur::select('id', 'prenom', 'nom')->get(),
             'Administration' => Personnel::select('id', 'prenom', 'nom')->get(),
             default => collect(),
         };
-
-        return view('user.update', compact('user', 'parents'));
+        $roles = RoleEnum::all();
+        return \inertia('User/Update', compact('user', 'parents', 'roles'));
     }
 
     /**

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Enum\RoleEnum;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 
 final class UpdateUserRequest extends FormRequest
 {
@@ -34,6 +36,7 @@ final class UpdateUserRequest extends FormRequest
         return [
             'photo' => ['nullable'],
             'sexe' => ['required'],
+            'role' => ['required', new Enum(RoleEnum::class)],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->user->id)],
             'userable_id' => ['required'],
         ];
