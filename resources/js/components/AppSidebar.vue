@@ -4,6 +4,7 @@ import DepenseController from '@/actions/App/Http/Controllers/DepenseController'
 import FiliereController from '@/actions/App/Http/Controllers/FiliereController';
 import MatiereController from '@/actions/App/Http/Controllers/MatiereController';
 import PeriodeController from '@/actions/App/Http/Controllers/PeriodeController';
+import PersonnelController from '@/actions/App/Http/Controllers/PersonnelController';
 import TeacherController from '@/actions/App/Http/Controllers/TeacherController';
 import TuteurController from '@/actions/App/Http/Controllers/TuteurController';
 import TypeController from '@/actions/App/Http/Controllers/TypeController';
@@ -77,6 +78,11 @@ const mainNavItems: NavItem[] = [
     {
         title: 'user',
         href: UserController.index().url,
+        icon: LayoutGrid,
+    },
+    {
+        title: 'personnel',
+        href: PersonnelController.index().url,
         icon: LayoutGrid,
     },
 ];

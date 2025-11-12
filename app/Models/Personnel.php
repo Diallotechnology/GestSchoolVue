@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Helper\HasSearch;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -35,7 +36,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 final class Personnel extends Model
 {
-    use HasFactory;
+    use HasFactory, HasSearch;
 
     protected $fillable = ['nom', 'prenom', 'contact'];
 

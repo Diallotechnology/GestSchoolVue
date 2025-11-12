@@ -510,6 +510,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Personnel whereUpdatedAt($value)
  * @property-read mixed $full_name
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Personnel search(?string $term, array $columns = [])
  */
 	final class Personnel extends \Eloquent {}
 }

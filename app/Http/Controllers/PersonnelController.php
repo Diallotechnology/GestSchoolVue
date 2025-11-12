@@ -4,13 +4,26 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Helper\DeleteAction;
-use App\Http\Requests\StorePersonnelRequest;
 use App\Models\Personnel;
+use App\Helper\DeleteAction;
+use Illuminate\Http\Request;
+use App\Http\Requests\StorePersonnelRequest;
 
 final class PersonnelController extends Controller
 {
-    use DeleteAction;
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        $rows = Personnel::query()
+            ->search($request->search, ['nom', 'prenom', 'contact'])
+            ->latest()
+            ->paginate(20)
+            ->withQueryString()->toResourceCollection();
+
+        return inertia('Personnel/Index', compact('rows'));
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -19,8 +32,6 @@ final class PersonnelController extends Controller
     {
         Personnel::create($request->validated());
         flash('Personnel ajouter avec success!');
-
-        return back();
     }
 
     /**
@@ -36,7 +47,7 @@ final class PersonnelController extends Controller
      */
     public function edit(Personnel $personnel)
     {
-        return view('personnel.update', compact('personnel'));
+        return inertia('Personnel/Edit', compact('personnel'));
     }
 
     /**
@@ -46,8 +57,6 @@ final class PersonnelController extends Controller
     {
         $personnel->update($request->validated());
         flash('personnel mise à jour avec success!');
-
-        return back();
     }
 
     /**
