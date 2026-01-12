@@ -824,19 +824,20 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property string $name
  * @property string $email
- * @property string|null $photo
+ * @property \Carbon\CarbonImmutable|null $email_verified_at
  * @property string $userable_type
  * @property int $userable_id
  * @property string $sexe
  * @property \App\Enum\RoleEnum $role
+ * @property string|null $photo
+ * @property bool $status
  * @property string $password
- * @property int $change_password
- * @property int $two_factor_enabled
- * @property string|null $two_factor_expires_at
- * @property int|null $two_factor_code
- * @property \Carbon\CarbonImmutable|null $email_verified_at
- * @property int $etat
+ * @property string|null $two_factor_secret
+ * @property string|null $two_factor_recovery_codes
+ * @property \Carbon\CarbonImmutable|null $two_factor_confirmed_at
+ * @property bool $change_password
  * @property string|null $remember_token
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
@@ -855,16 +856,17 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmailVerifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEtat($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePhoto($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereSexe($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereTwoFactorCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereTwoFactorEnabled($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereTwoFactorExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereTwoFactorConfirmedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereTwoFactorRecoveryCodes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereTwoFactorSecret($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUserableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUserableType($value)

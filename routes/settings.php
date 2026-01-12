@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\Settings\PasswordController;
-use App\Http\Controllers\Settings\ProfileController;
-use App\Http\Controllers\Settings\TwoFactorAuthenticationController;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Settings\ProfileController;
+use App\Http\Controllers\Settings\PasswordController;
+use App\Http\Controllers\Settings\PasswordChangeController;
+use App\Http\Controllers\Settings\TwoFactorAuthenticationController;
 
 Route::middleware('auth')->group(function () {
     Route::redirect('settings', '/settings/profile');
@@ -25,4 +26,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('settings/two-factor', [TwoFactorAuthenticationController::class, 'show'])
         ->name('two-factor.show');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('change-password/{email}', [PasswordChangeController::class, 'create'])
+        ->name('password_change.create');
+
+    Route::post('change-password/store', [PasswordChangeController::class, 'store'])
+        ->name('password_change.store');
 });

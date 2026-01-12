@@ -25,13 +25,13 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        // 'name',
+        'name',
         'email',
         'password',
         'photo',
         'role',
         'sexe',
-        'etat',
+        'status',
         'change_password',
     ];
 
@@ -59,6 +59,8 @@ class User extends Authenticatable
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
             'role' => RoleEnum::class,
+            'status' => 'boolean',
+            'change_password' => 'boolean',
         ];
     }
 

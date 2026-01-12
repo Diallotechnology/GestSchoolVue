@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('classe_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('tuteur_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->string('reference')->unique()->nullable();
             $table->string('prenom');
             $table->string('nom');
             $table->string('contact');
@@ -24,7 +25,6 @@ return new class extends Migration
             $table->date('naissance');
             $table->integer('scolarite');
             $table->integer('frais');
-            $table->string('reference')->unique()->nullable();
             $table->timestamps();
             $table->index(['nom', 'prenom']);
             $table->index('reference');

@@ -5,45 +5,42 @@ import { useDebounce } from './useDebounce';
 
 type DateRange = { start?: string | null; end?: string | null } | null;
 
+interface FilterOptions<T> {
+  controller: { index: (...args: any[]) => { url: string } };
+  debounceKeys?: (keyof T)[];
+  delay?: number;
+  persist?: boolean;
+  storageKey?: string; // sauvegarde dans localStorage
+}
+
 export function useDynamicFilters<T extends Record<string, any>>(
   initialFilters: T & { start?: string | null; end?: string | null },
-  options: {
-    controller: { index: (...args: any[]) => { url: string } };
-    debounceKeys?: (keyof T)[];
-    delay?: number;
-    persist?: boolean;
-  },
+  options: FilterOptions<T>,
 ) {
-  // ✅ filters est rempli immédiatement donc on peut le typer non-optional
-  const filters = {} as { [K in keyof T]: Ref<T[K]> };
+  const STORAGE_KEY = options.storageKey || 'filters';
 
-  const urlParams = new URLSearchParams(window.location.search);
+  // 🔁 Restauration éventuelle depuis localStorage
+  const saved = options.persist ? JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') : {};
+
+  const filters = {} as { [K in keyof T]: Ref<T[K]> };
 
   for (const key in initialFilters) {
     const k = key as keyof T;
-    let value = initialFilters[k];
-
-    if (options.persist && urlParams.has(key)) {
-      value = (urlParams.get(key) as any) ?? initialFilters[k];
-    }
-
-    filters[k] = ref(value) as Ref<T[typeof k]>;
+    filters[k] = ref((saved[key] ?? initialFilters[k]) as T[typeof k]);
   }
 
-  // 🔑 Gestion spéciale du range de dates
   const date = ref<DateRange>({
-    start: (options.persist && urlParams.get('start')) || initialFilters.start || null,
-    end: (options.persist && urlParams.get('end')) || initialFilters.end || null,
+    start: saved.start ?? initialFilters.start ?? null,
+    end: saved.end ?? initialFilters.end ?? null,
   });
 
   const dateModel = computed({
-    get: () => date.value || { start: null, end: null },
-    set: (val: DateRange) => {
-      date.value = val;
-    },
+    get: () => date.value ?? { start: null, end: null },
+    set: (val: DateRange) => (date.value = val),
   });
 
-  // Debounce
+  const loading = ref(false);
+
   const debounced: Partial<{ [K in keyof T]: Ref<any> }> = {};
   (options.debounceKeys ?? []).forEach((key) => {
     debounced[key] = useDebounce(filters[key], options.delay ?? 300);
@@ -55,44 +52,60 @@ export function useDynamicFilters<T extends Record<string, any>>(
       filters[k].value = initialFilters[k];
     }
     date.value = { start: null, end: null };
+    save();
     reload();
   }
 
+  function save() {
+    if (!options.persist) return;
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        ...Object.fromEntries(Object.entries(filters).map(([k, v]) => [k, v.value])),
+        start: date.value?.start,
+        end: date.value?.end,
+      }),
+    );
+  }
+
   function reload() {
-  const payload: Record<string, any> = {};
+    const payload: Record<string, any> = {};
 
-  for (const key in filters) {
-    const k = key as keyof T;
-    const value = debounced[k]?.value ?? filters[k].value ?? null;
+    for (const key in filters) {
+      const k = key as keyof T;
+      const source = debounced[k] ?? filters[k];
 
-    // Ne garde que les valeurs significatives
-    if (value !== null && value !== '' && value !== undefined) {
-      payload[k as string] = value;
+      // 👇 Cast explicite pour satisfaire TS
+      payload[key as string] = source?.value ?? null;
     }
+
+    payload.start = date.value?.start ?? null;
+    payload.end = date.value?.end ?? null;
+
+    router.get(options.controller.index().url, payload, {
+      preserveState: true,
+      replace: true,
+    });
   }
 
-  // ✅ Idem pour le range de dates
-  if (date.value?.start) payload.start = date.value.start;
-  if (date.value?.end) payload.end = date.value.end;
 
-  router.get(options.controller.index().url, payload, {
-    preserveState: true,
-    replace: true,
-  });
-}
-
-
+  // Filtrage des champs texte / select
   for (const key in filters) {
     const k = key as keyof T;
-    const source = debounced[k] ?? filters[k];
-    watch(source, reload);
+    const src = debounced[k] ?? filters[k];
+    watch(src, () => reload(), { deep: false });
   }
-  watch(date, reload, { deep: true });
 
-  return {
-    filters,
-    dateModel,
-    reset,
-    reload,
-  };
+  // Filtrage date → une seule requête une fois les deux dates choisies
+  const debouncedDate = useDebounce(date, 350);
+  watch(
+    debouncedDate,
+    () => {
+      if (debouncedDate.value?.start && debouncedDate.value?.end) reload();
+      save();
+    },
+    { deep: true },
+  );
+
+  return { filters, dateModel, reload, reset, loading };
 }
