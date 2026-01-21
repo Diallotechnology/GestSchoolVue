@@ -23,8 +23,8 @@ final class ClasseFactory extends Factory
         return [
             'filiere_id' => rand(1, 2),
             'nom' => $this->faker->companySuffix(),
-            'scolarite' => rand(1000000, 300000),
-            'frais' => rand(50000, 70000),
+            'niveau' => rand(1, 3),
+            'diplome' => $this->faker->randomElement(['Licence', 'Master']),
         ];
     }
 }

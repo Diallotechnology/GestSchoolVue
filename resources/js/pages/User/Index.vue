@@ -25,7 +25,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { PaginatedData, type BreadcrumbItem } from '@/types';
 import { genres } from '@/types/genre';
 import { RoleOption } from '@/types/models';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import { SearchIcon, X } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 
@@ -38,10 +38,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 interface Row {
     id: number;
+    name: string;
     email: string;
     role: string;
     sexe: string;
-    etat: boolean;
+    status: boolean;
     photo: string;
     change_password: string;
     created_at: string;
@@ -248,11 +249,13 @@ const filteredRows = computed(() => props.rows.data);
             <TableHeader>
                 <TableRow>
                     <TableHead> Id </TableHead>
+                    <TableHead>Nom</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Role</TableHead>
                     <TableHead>sexe</TableHead>
                     <TableHead>Change MDP</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Active/Desactiver</TableHead>
                     <TableHead>Date </TableHead>
                     <TableHead>Action </TableHead>
                 </TableRow>
@@ -260,6 +263,7 @@ const filteredRows = computed(() => props.rows.data);
             <TableBody v-if="filteredRows.length > 0">
                 <TableRow v-for="row in filteredRows" :key="row.id">
                     <TableCell>{{ row.id }}</TableCell>
+                    <TableCell>{{ row.name }}</TableCell>
                     <TableCell>{{ row.email }}</TableCell>
                     <TableCell>{{ row.sexe }}</TableCell>
                     <TableCell>{{ row.role }}</TableCell>
@@ -269,8 +273,24 @@ const filteredRows = computed(() => props.rows.data);
                     </TableCell>
 
                     <TableCell>
-                        <Badge v-if="row.etat">Actif</Badge>
+                        <Badge v-if="row.status">Actif</Badge>
                         <Badge variant="destructive" v-else>Desactiver</Badge>
+                    </TableCell>
+                    <TableCell>
+                        <Link
+                            :href="UserController.destroy({ id: row.id }).url"
+                            method="delete"
+                            as="button"
+                            :data="{ status: !row.status }"
+                            class="rounded px-2 py-1 text-xs text-white transition"
+                            :class="
+                                row.status
+                                    ? 'bg-red-600 hover:bg-red-700'
+                                    : 'bg-green-600 hover:bg-green-700'
+                            "
+                        >
+                            {{ row.status ? '❌ Désactiver' : '✅ Activer' }}
+                        </Link>
                     </TableCell>
                     <TableCell>{{ row.created_at }}</TableCell>
                     <TableCell class="flex">

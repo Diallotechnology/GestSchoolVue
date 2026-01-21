@@ -53,7 +53,7 @@ final class Ue extends Model
      *
      * @var array
      */
-    protected $fillable = ['filiere_id', 'periode_id', 'nom', 'code', 'credit'];
+    protected $fillable = ['classe_id', 'nom', 'code', 'credit'];
 
     protected static function booted(): void
     {
@@ -86,20 +86,13 @@ final class Ue extends Model
 
 
     /**
-     * Get the filiere that owns the Ue
+     * Get the classe that owns the Ue
      */
-    public function filiere(): BelongsTo
+    public function classe(): BelongsTo
     {
-        return $this->belongsTo(Filiere::class);
+        return $this->belongsTo(Classe::class);
     }
 
-    /**
-     * Get the periode that owns the Ue
-     */
-    public function periode(): BelongsTo
-    {
-        return $this->belongsTo(Periode::class);
-    }
 
     /**
      * The matieres that belong to the Ue

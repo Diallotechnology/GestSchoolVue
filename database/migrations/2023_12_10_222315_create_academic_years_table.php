@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ues', function (Blueprint $table) {
+        Schema::create('academic_years', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('classe_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->string('nom');
-            $table->string('code')->unique();
-            $table->integer('credit');
+            $table->string('libelle')->unique(); // 2024-2025
+            $table->boolean('active')->default(false);
             $table->timestamps();
         });
     }
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ues');
+        Schema::dropIfExists('academic_years');
     }
 };

@@ -76,7 +76,7 @@ final class Classe extends Model
      *
      * @var array
      */
-    protected $fillable = ['nom', 'scolarite', 'frais', 'filiere_id'];
+    protected $fillable = ['nom', 'niveau', 'diplome', 'filiere_id'];
 
     protected $appends = ['full_classe_name'];
 
@@ -87,23 +87,6 @@ final class Classe extends Model
         );
     }
 
-    public function getScolariteFormatAttribute(): string
-    {
-        return number_format($this->scolarite, 0, ',', ' ') . ' CFA';
-    }
-
-    public function getFraisFormatAttribute(): string
-    {
-        return number_format($this->frais, 0, ',', ' ') . ' CFA';
-    }
-
-    /**
-     * Get all of the students for the Classe
-     */
-    public function students(): HasMany
-    {
-        return $this->hasMany(Student::class);
-    }
 
     /**
      * The course that belong to the Classe
@@ -113,13 +96,6 @@ final class Classe extends Model
         return $this->belongsToMany(Course::class);
     }
 
-    /**
-     * Get all of the devoirs for the Classe
-     */
-    public function devoirs(): HasMany
-    {
-        return $this->hasMany(Devoir::class);
-    }
 
     /**
      * The matieres that belong to the Filiere
@@ -145,13 +121,6 @@ final class Classe extends Model
         return $this->belongsTo(Filiere::class);
     }
 
-    /**
-     * Get all of the scolarites for the Classe
-     */
-    public function payments(): HasMany
-    {
-        return $this->hasMany(Payment::class);
-    }
 
     public function scopeForUser(Builder $query): Builder
     {

@@ -2,9 +2,11 @@
 
 use Inertia\Inertia;
 use App\Enum\RoleEnum;
+use App\Models\Payment;
 use Laravel\Fortify\Features;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UeController;
+use Database\Factories\PaymentFactory;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
@@ -16,13 +18,13 @@ use App\Http\Controllers\TuteurController;
 use App\Http\Controllers\DepenseController;
 use App\Http\Controllers\FiliereController;
 use App\Http\Controllers\MatiereController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\PlanningController;
 use App\Http\Controllers\PersonnelController;
-
 
 Route::get('/', function () {
     return Inertia::render('Dashboard');
@@ -55,6 +57,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('personnel', PersonnelController::class)->except('create');
     Route::resource('note', NoteController::class)->except('create', 'store');
     Route::resource('depense', DepenseController::class)->except('create', 'show');
+    Route::resource('payment', PaymentController::class)->except('create');
     // Route::resource('scolarite', ScolariteController::class)->except( 'create');
     Route::resource('ue', UeController::class)->except('create', 'show');
     // });

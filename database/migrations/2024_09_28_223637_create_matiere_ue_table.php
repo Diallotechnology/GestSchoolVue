@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('matiere_ue', function (Blueprint $table) {
             $table->foreignId('ue_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('matiere_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->integer('coefficient')->nullable();
             $table->primary(['ue_id', 'matiere_id']);
         });
     }

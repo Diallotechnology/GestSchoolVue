@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('classes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('filiere_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->string('nom');
-            $table->integer('scolarite');
-            $table->integer('frais');
+            $table->string('nom'); // L1, L2, L3, M1…
+            $table->integer('niveau'); // 1,2,3…
+            $table->string('diplome'); // Licence, Master
             $table->timestamps();
         });
     }

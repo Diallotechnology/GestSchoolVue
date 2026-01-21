@@ -88,7 +88,7 @@ final class Student extends Model
      *
      * @var array
      */
-    protected $fillable = ['nom', 'prenom', 'sexe', 'naissance', 'reference', 'contact', 'scolarite', 'frais', 'classe_id', 'tuteur_id'];
+    protected $fillable = ['nom', 'prenom', 'sexe', 'naissance', 'reference', 'contact', 'tuteur_id'];
 
     protected $appends = ['full_name'];
 
@@ -109,27 +109,9 @@ final class Student extends Model
         return $this->morphOne(User::class, 'userable');
     }
 
-    public function getScolariteFormatAttribute(): string
-    {
-        return number_format($this->classe->scolarite - $this->scolarite, 0, ',', ' ') . ' CFA';
-    }
-
-    public function getFraisFormatAttribute(): string
-    {
-        return number_format($this->classe->frais - $this->frais, 0, ',', ' ') . ' CFA';
-    }
-
     public function getNaissanceFormatAttribute(): string
     {
         return Carbon::parse($this->naissance)->format('d/m/Y');
-    }
-
-    /**
-     * Get the classe that owns the Student
-     */
-    public function classe(): BelongsTo
-    {
-        return $this->belongsTo(Classe::class);
     }
 
     /**
@@ -140,13 +122,6 @@ final class Student extends Model
         return $this->belongsTo(Tuteur::class);
     }
 
-    /**
-     * Get all of the question for the Student
-     */
-    public function questions(): HasMany
-    {
-        return $this->hasMany(Question::class);
-    }
 
     /**
      * Get all of the notes for the Student
@@ -154,14 +129,6 @@ final class Student extends Model
     public function notes(): HasMany
     {
         return $this->hasMany(Note::class);
-    }
-
-    /**
-     * Get all of the scolarites for the Student
-     */
-    public function payments(): HasMany
-    {
-        return $this->hasMany(Payment::class);
     }
 
     /**

@@ -13,6 +13,16 @@
 
 namespace App\Models{
 /**
+ * @method static \Database\Factories\AcademicYearFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AcademicYear newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AcademicYear newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AcademicYear query()
+ */
+	class AcademicYear extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\Classe
  *
  * @property int $id
@@ -306,6 +316,31 @@ namespace App\Models{
  * @mixin Eloquent
  */
 	final class Folder extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property-read \App\Models\AcademicYear|null $academic_year
+ * @property-read \App\Models\Classe|null $classe
+ * @method static \Database\Factories\FraisScolariteFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FraisScolarite newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FraisScolarite newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FraisScolarite query()
+ */
+	class FraisScolarite extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property-read \App\Models\AcademicYear|null $academic_year
+ * @property-read \App\Models\Classe|null $classe
+ * @property-read \App\Models\Student|null $student
+ * @method static \Database\Factories\InscriptionFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Inscription newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Inscription newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Inscription query()
+ */
+	class Inscription extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -816,6 +851,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ue wherePeriodeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ue whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\Classe|null $classe
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Ue search(?string $term, array $columns = [])
  */
 	final class Ue extends \Eloquent {}
@@ -872,5 +908,15 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUserableType($value)
  */
 	class User extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @method static \Database\Factories\ValidationUeFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ValidationUe newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ValidationUe newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ValidationUe query()
+ */
+	class ValidationUe extends \Eloquent {}
 }
 

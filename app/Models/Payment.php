@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Enum\PaymentModeEnum;
 use Illuminate\Support\Carbon;
 use App\Helper\HasUniqueReference;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
@@ -59,9 +60,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Payment extends Model
 {
     /** @use HasFactory<\Database\Factories\PaymentFactory> */
-    use HasFactory, CacheHelper, HasUniqueReference;
+    use HasFactory, CacheHelper, HasUniqueReference, HasUlids;
 
 
+    /**
+     * The data type of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
+     * Indicates if the model's ID is auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
     /**
      * The attributes that are mass assignable.
      *
@@ -69,8 +83,7 @@ class Payment extends Model
      */
     protected $fillable = [
         'user_id',
-        'student_id',
-        'classe_id',
+        'inscription_id',
         'type',
         'mode',
         'adresse',
@@ -158,22 +171,6 @@ class Payment extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Get the student that owns the Scolarite
-     */
-    public function student(): BelongsTo
-    {
-        return $this->belongsTo(Student::class);
-    }
-
-    /**
-     * Get the classe that owns the Scolarite
-     */
-    public function classe(): BelongsTo
-    {
-        return $this->belongsTo(Classe::class);
     }
 
     protected static array $cacheKeys = [

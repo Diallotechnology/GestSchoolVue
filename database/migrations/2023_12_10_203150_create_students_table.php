@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('classe_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('tuteur_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('reference')->unique()->nullable();
             $table->string('prenom');
@@ -23,8 +22,6 @@ return new class extends Migration
             $table->string('contact');
             $table->string('sexe');
             $table->date('naissance');
-            $table->integer('scolarite');
-            $table->integer('frais');
             $table->timestamps();
             $table->index(['nom', 'prenom']);
             $table->index('reference');

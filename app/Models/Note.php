@@ -63,72 +63,8 @@ final class Note extends Model
      *
      * @var array
      */
-    protected $fillable = ['valeur', 'type', 'diplome', 'student_id', 'matiere_id', 'user_id', 'periode_id'];
+    protected $fillable = ['valeur', 'session', 'inscription_id', 'matiere_id', 'user_id', 'periode_id'];
 
-    public function refreshGlobalCacheVersion(): void
-    {
-        Cache::forever('global_cache_version', uniqid());
-    }
-
-    public function flushRelevantCaches(): void
-    {
-        // Clé spécifique à l'étudiant
-        self::invalidateCache("student_{$this->student_id}_details");
-
-        $periodes = Periode::pluck('id')->toArray();
-
-        if ($this->periode_id) {
-            $key = "student_{$this->student_id}_results_{$this->periode_id}_{$this->updated_at->timestamp}";
-            self::invalidateCache($key);
-            self::flushCacheGroup("results_{$this->student_id}_{$this->periode_id}");
-        } else {
-            foreach ($periodes as $periode_id) {
-                self::flushCacheGroup("results_{$this->student_id}_{$periode_id}");
-            }
-        }
-
-        self::flushCacheGroup('livewire.data');
-
-        $lastPage = Student::paginate(15)->lastPage();
-        for ($i = 1; $i <= $lastPage; $i++) {
-            self::invalidateCache($this->buildCacheKey($i));
-        }
-
-        // 👇 Flush du cache rows() de l'utilisateur courant
-        self::flushCacheGroup("note_rows_user_" . Auth::id());
-    }
-
-
-    protected static function booted()
-    {
-        self::saved(function ($note) {
-            $note->refreshGlobalCacheVersion();
-            $note->flushRelevantCaches();
-        });
-
-        self::deleted(function ($note) {
-            $note->refreshGlobalCacheVersion();
-            $note->flushRelevantCaches();
-        });
-    }
-
-    private function buildCacheKey($page): string
-    {
-        return 'student_results:' . md5(
-            $this->student_id .
-                $this->periode_id .
-                $page .
-                Cache::get('global_cache_version')
-        );
-    }
-
-    /**
-     * Get the student that owns the Note
-     */
-    public function student(): BelongsTo
-    {
-        return $this->belongsTo(Student::class);
-    }
 
     /**
      * Get the matiere that owns the Note

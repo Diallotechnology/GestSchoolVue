@@ -13,6 +13,7 @@ use App\Models\Personnel;
 use App\Helper\DeleteAction;
 use Illuminate\Http\Request;
 use App\Jobs\MailNotificationJob;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -134,9 +135,23 @@ final class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
-        $user->delete();
-        flash()->success('user supprimée avec succès');
+        if (Auth::user()->id === $user->id) {
+            abort(403, 'Vous ne pouvez pas désactiver votre propre compte');
+        }
+        $request->validate([
+            'status' => ['required', 'boolean'],
+        ]);
+
+        $user->update([
+            'status' => $request->boolean('status'),
+        ]);
+
+        flash()->success(
+            $user->status
+                ? 'Utilisateur activé avec succès'
+                : 'Utilisateur désactivé avec succès'
+        );
     }
 }

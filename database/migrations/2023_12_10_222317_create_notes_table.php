@@ -15,16 +15,15 @@ return new class extends Migration
     {
         Schema::create('notes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('matiere_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('periode_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->enum('type', ['Examen', 'Devoir']);
-            $table->enum('diplome', ['Licence', 'Master', 'DUT']);
+            $table->foreignId('inscription_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('matiere_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('periode_id')->constrained()->cascadeOnDelete();
+            $table->enum('session', ['normale', 'rattrapage']);
             $table->float('valeur');
             $table->timestamps();
-            $table->index(['type', 'valeur', 'diplome', 'matiere_id']);
-            $table->index(['student_id', 'matiere_id']);
+            $table->index(['valeur', 'matiere_id']);
+            $table->index(['inscription_id', 'matiere_id']);
         });
     }
 
